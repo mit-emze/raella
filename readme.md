@@ -1,2 +1,2 @@
-### Models of RAELLA are coming soon! 
-They will be released alongside a fast & flexible PIM modeling framwork built with Timeloop and Accelergy. Check back soon for updates.
+### Models of RAELLA are coming soon!
+We're currently working on a general PIM modeling framework built with Timeloop and Accelergy. RAELLA models will be shared alongside the larger framework once the larger framework is complete. Check back soon for updates.

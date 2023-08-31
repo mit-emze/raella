@@ -1,0 +1,138 @@
+compound_components:
+  version: 0.4
+  classes:
+  # ===========================================================================
+  # Output register. Can avoid doing reads if speculation is successful.
+  # ===========================================================================
+  - name: raella_output_register
+    attributes:
+      width: "must_specify"
+      depth: "must_specify"
+      speculation_adc_scale: "must_specify"
+      technology: "must_specify"
+      entry_bits: "must_specify"
+      speculation_enabled: speculation_adc_scale != 1
+      n_flags: width * depth // entry_bits
+      flag_width: 64
+      flag_reads_per_read: (width // entry_bits) / flag_width
+      flag_action_share: speculation_enabled * flag_reads_per_read
+
+    subcomponents:
+    # Shift and add circuit to add together output
+    - name: buf
+      class: smartbuffer_sram
+      attributes:
+        technology: technology
+        width: width
+        depth: depth
+
+    - name: flags
+      class: smartbuffer_sram
+      attributes:
+        technology: technology
+        width: 64
+        depth: n_flags // width
+
+    actions:
+    - name: read
+      subcomponents: 
+      - {name: buf, actions: [{name: read, action_share: speculation_adc_scale}]}
+      - {name: flags, actions: [{name: read, action_share: flag_action_share}]}
+    - &update_action
+      name: update
+      subcomponents: 
+      - {name: buf, actions: [{name: write, action_share: speculation_adc_scale}]}
+      - {name: flags, actions: [{name: write, action_share: flag_action_share}]}
+    - name: idle
+      subcomponents: 
+      - {name: buf, actions: [{name: idle}]}
+      - {name: flags, actions: [{name: idle}]}
+    - {name: write, <<: *update_action} # Same as update
+
+  # ===========================================================================
+  # Input buffer.
+  # ===========================================================================
+  - name: raella_input_buffer
+    attributes:
+      width: "must_specify"
+      depth: "must_specify"
+      technology: "must_specify"
+      adc_action_share: "must_specify"
+      input_bits: "must_specify"
+
+    subcomponents:
+    - name: buf
+      class: smartbuffer_sram
+      attributes:
+        width: width
+        technology: technology
+        # Read once for normal operation, twice for speculation
+        read_action_share: 1 if adc_action_share == 1 else 2
+        depth: depth
+
+    - name: input_summer
+      class: aladdin_adder
+      attributes:
+        technology: technology
+        datawidth: input_bits * 2
+        width: input_bits * 2
+
+    actions:
+    - {name: idle, subcomponents: [{name: buf, actions: [{name: idle}]}]}
+
+    # If we speculate (ADC action share is something other than 1) then we must
+    # read twice for speculate and recover
+    - name: read
+      subcomponents:
+      - name: buf
+        actions: 
+          - {name: read, action_share: 1 if ADC_ACTION_SHARE == 1 else 2}
+
+    # On a write we must update the running sum. Read the old value, subtract, 
+    # add the new value.
+    - &update_action
+      name: update
+      subcomponents:
+      - {name: buf, actions: [{name: read}]}
+      - {name: buf, actions: [{name: write}]}
+      - {name: input_summer, actions: [{name: add, action_share: 2}]}
+    - {name: write, <<: *update_action} # Same as update
+
+
+  # ===========================================================================
+  # Center+Offset correct has a buffer for offsets and a multiplier to
+  # multiply the input running sum by the offset.
+  # ===========================================================================
+  - name: raella_output_center_offset_correct
+    attributes:
+      width: "must_specify"
+      depth: "must_specify"
+      technology: "must_specify"
+      center_entries: "must_specify"
+      buf_width: 64
+      read_share: width / buf_width
+
+    subcomponents:
+    - name: offsets_buf
+      class: smartbuffer_sram
+      attributes:
+        technology: technology
+        width:      64
+        depth:      center_entries // width * 4
+
+    - name: multiplier
+      class: aladdin_multiplier
+      attributes:
+        technology: technology
+        width_a:    4
+        width_b:    12
+
+    actions:
+    - name: read  # Read action processes a value
+      subcomponents:
+      # Read offsets buf and compute the offset required
+      - {name: offsets_buf, actions: [{name: read, action_share: read_share}]}
+      - {name: multiplier, actions: [{name: multiply}]}
+    - {name: write, subcomponents: []} # Unused
+    - {name: idle, subcomponents: []} # Unused
+    - {name: update, subcomponents: []} # Unused    

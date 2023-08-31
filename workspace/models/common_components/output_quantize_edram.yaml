@@ -1,0 +1,34 @@
+compound_components:
+  version: 0.4
+  classes:
+  # This compound component includes storage to store quantization parameters
+  # plus a multiplier to compute quantized outputs.
+  - name: output_quantize_edram
+    attributes:
+      width: "must_specify"
+      depth: "must_specify"
+      technology: "must_specify"
+      storage_for_scales: "must_specify"
+    subcomponents:
+    - name: edram_scales
+      class: isaac_edram
+      attributes:
+        technology: technology
+        depth: depth
+        width: storage_for_scales // depth
+
+    - name: multiplier
+      class: raella_quant_multiplier
+      attributes:
+        technology: technology
+
+    actions:
+    - name: read # Read action processes a value
+      subcomponents:
+      - name: edram_scales
+        actions: [{name: read}]
+      - name: multiplier
+        actions: [{name: multiply, action_share: width // 8}]
+    - {name: write, subcomponents: []}
+    - {name: update, subcomponents: []}
+    - {name: idle, subcomponents: []}

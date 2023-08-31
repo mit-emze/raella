@@ -1,0 +1,43 @@
+compound_components:
+  version: 0.4
+  classes:
+  - name: raella_dac
+    attributes: 
+      technology: "must_specify"
+      rows: "must_specify"
+      cols: "must_specify"
+      cols_active_at_once: "must_specify"
+      cell_config: "must_specify"
+      average_input_value: "must_specify"
+      average_cell_value: "must_specify"
+      latency: "must_specify"
+
+    subcomponents:
+    # AND gate to realize a pulse-train DAC
+    - name: dac_and_gate
+      class: nand_gate
+      attributes:
+        technology: technology
+        n_components: n_components
+        area_share: n_components
+        
+
+    # DAC is a simple row driver
+    - name: row_dac
+      class: input_row_drivers
+      attributes:
+        technology: technology
+        rows: rows
+        cols: cols
+        cols_active_at_once: cols_active_at_once
+        cell_config: cell_config
+        average_input_value: average_input_value
+        average_cell_value: average_cell_value
+        latency: latency
+
+    actions:
+    - {name: write, subcomponents: {}}
+    - {name: idle, subcomponents: [{name: row_dac, actions: [{name: idle}]}]}
+    - {name: update, subcomponents: []}
+    # Read action processes a value
+    - {name: read, subcomponents: [{name: row_dac, actions: [{name: read}]}]}

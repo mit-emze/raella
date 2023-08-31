@@ -1,0 +1,196 @@
+compound_components:
+  version: 0.4
+  # ===========================================================================
+  # Shared descriptors
+  # ===========================================================================
+  check_ignore_macros:
+    - &pim_attributes
+      technology: "must_specify"
+      rows: "must_specify"
+      cols: "must_specify"
+      cols_active_at_once: "must_specify"
+      cell_config: "must_specify"
+      average_input_value: "must_specify"
+      average_cell_value: "must_specify"
+      latency: "must_specify"
+      voltage_dac_bits: null # Optional
+      temporal_dac_bits: null
+      temporal_spiking: null
+      adc_action_share: 1
+      adc_area_share: 1
+      read_pulse_width: 1e-9 # FIXME: If this is left blank, the number should
+                            # be grabbed from the cell file. If the cell file
+                            # is blank as well, use a default value.
+                            # Right now, cell file step is skipped
+
+    - &pim_attributes_subcomponent
+      technology: technology
+      rows: rows
+      cols: cols
+      cols_active_at_once: cols_active_at_once
+      cell_config: cell_config
+      average_input_value: average_input_value
+      average_cell_value: average_cell_value
+      latency: latency
+      voltage_dac_bits: voltage_dac_bits
+      temporal_dac_bits: temporal_dac_bits
+      temporal_spiking: temporal_spiking
+      read_pulse_width: read_pulse_width
+      
+  classes:
+  # ===========================================================================
+  # PIM row drivers. These drive crossbar rows for reading.
+  # ===========================================================================
+  - name: input_row_drivers
+    attributes: {<<: *pim_attributes}
+
+    subcomponents:
+    # Row drivers
+    - name: pim_row_drivers
+      class: array_row_drivers
+      attributes: {<<: *pim_attributes_subcomponent}
+
+    actions:
+    - name: read # Read action processes a value
+      subcomponents: [{name: pim_row_drivers, actions: [{name: read}]}]
+    - name: idle
+      subcomponents: [{name: pim_row_drivers, actions: [{name: idle}]}]
+    - {name: write, subcomponents: []} # Unused
+    - {name: update, subcomponents: []} # Unused
+
+
+  # ===========================================================================
+  # PIM write drivers. These drive crossbar rows for writing
+  # ===========================================================================
+  - name: weight_row_drivers
+    attributes: {<<: *pim_attributes}
+    subcomponents:
+    # Row drivers
+    - name: pim_row_drivers
+      class: INPUT_DRIVERS_CLASS
+      attributes: {<<: *pim_attributes_subcomponent}
+      area_share: 0 # Area already taken into account in the input drivers
+
+    actions:
+    - name: read # Read action processes a value
+      subcomponents: [{name: pim_row_drivers, actions: [{name: write}]}]
+    - {name: write, subcomponents: []} # Unused
+    - {name: idle, subcomponents: []} # Unused
+    - {name: update, subcomponents: []} # Unused
+
+  # ===========================================================================
+  # PIM cell. This is a single memory device used for computation.
+  # ===========================================================================
+  - name: cell
+    attributes: 
+      <<: *pim_attributes
+      width_cells: "must_specify"
+    subcomponents:
+    - name: cell
+      class: memory_cell
+      attributes:
+        <<: *pim_attributes_subcomponent
+        adc_resolution: 0
+      area_share: width_cells
+    actions:
+    - name: read
+      subcomponents:
+      - {name: cell, actions: [{name: read, action_share: width_cells}]}
+    - name: write
+      subcomponents:
+      - {name: cell, actions: [{name: write}]}
+    - name: idle
+      subcomponents:
+      - {name: cell, actions: [{name: idle, action_share: width_cells}]}
+      # - name: control_read
+      #   subcomponents:
+      #     - {name: cell, actions: [{name: read, action_share: 100}]}
+    - {name: update, subcomponents: []} # Unused
+
+  # ===========================================================================
+  # Column readout. This includes column precharging, mux, and ADC
+  # ===========================================================================
+  - name: column_readout
+    attributes:
+      <<: *pim_attributes
+      resolution: "must_specify"
+      n_adcs: "must_specify"
+      include_column_drivers: "must_specify"
+      
+    subcomponents:
+    - name: array_col_drivers
+      class: array_col_drivers
+      area_share: include_column_drivers
+      attributes: {<<: *pim_attributes_subcomponent}
+
+    - name: output_adc
+      class: isaac_adc
+      attributes: 
+        <<: *pim_attributes_subcomponent
+        n_adcs: n_adcs
+        adc_resolution: resolution  # Both here in case plug-ins have different vocab
+        resolution: resolution      # Both here in case plug-ins have different vocab
+        throughput: 1 / latency * cols_active_at_once
+        n_components: n_adcs
+      area_share: adc_area_share
+
+    actions:
+    - name: read # Read action processes a value
+      subcomponents:
+      - {name: array_col_drivers, actions: [{name: drive, action_share: adc_action_share * include_column_drivers}]}
+      - {name: output_adc, actions: [{name: read, action_share: adc_action_share}]}
+    - {name: write, subcomponents: []} # Unused
+    - name: idle
+      subcomponents:
+      - {name: array_col_drivers, actions: [{name: idle}]}
+      - {name: output_adc, actions: [{name: idle}]}
+    - {name: update, subcomponents: []} # Unused
+
+  # ===========================================================================
+  # Shift add
+  # ===========================================================================
+  - name: shift_add_with_adc_action_share
+    attributes:
+      <<: *pim_attributes
+      resolution: "must_specify"
+      n_adcs: "must_specify"
+
+    subcomponents:
+    - name: shift_add_unit
+      class: shift_add_unit
+      attributes:
+        <<: *pim_attributes_subcomponent
+        n_bits: resolution
+        shift_register_n_bits: resolution * 2
+        n_components: n_adcs
+
+    actions:
+    - name: update
+      subcomponents:
+      - {name: shift_add_unit, actions: [{name: shift_add, action_share: adc_action_share}]}
+    - {name: write, subcomponents: []} # Unused
+    - name: idle
+      subcomponents:
+      - {name: shift_add_unit, actions: [{name: idle}]}
+    - {name: read, subcomponents: []} # Unused
+
+  # ===========================================================================
+  # Model MACs as occuring for free, as they are done in analog domain.
+  # ===========================================================================
+  - name: free_mac
+    subcomponents: []
+    attributes: {}
+    actions: [{name: compute, subcomponents: []}]
+
+
+  # ===========================================================================
+  # Dummy storage for when we want a zero-cost storage
+  # ===========================================================================
+  - name: dummy_storage
+    subcomponents: []
+    attributes: {}
+    actions:
+    - {name: read, subcomponents: []} # Unused
+    - {name: write, subcomponents: []} # Unused
+    - {name: idle, subcomponents: []} # Unused
+    - {name: update, subcomponents: []} # Unused

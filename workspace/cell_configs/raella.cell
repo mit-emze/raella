@@ -1,0 +1,41 @@
+-MemCellType: memristor
+-AccessType: CMOS
+-AccessTransistorResistance (ohm): 0
+
+// 1.49011611938 + 4F^2 access transistor
+-CellArea (F^2): 5.49011611938
+
+-CellAspectRatio: 1
+
+-ResistanceOnAtSetVoltage (ohm): 1333
+-ResistanceOffAtSetVoltage (ohm): 20000
+-ResistanceOnAtResetVoltage (ohm): 1333
+-ResistanceOffAtResetVoltage (ohm): 20000
+-ResistanceOnAtReadVoltage (ohm): 1333
+-ResistanceOffAtReadVoltage (ohm): 20000
+-ResistanceOnAtHalfResetVoltage (ohm): 1333
+// WARNING: ON resistance is set lower than it actually is in-crossbar.
+// This is because NeuroSim adds ~640 ohms of wire resistance on average,
+// but RAELLA's 2T2R add/subtract is very local and doesn't have this wire
+// resistance. So we pre-subtract the wire resistance here to get our 1333-ohm
+// resistance.
+
+-CapacitanceOn (F): 1e-16
+-CapacitanceOff (F): 1e-16
+
+-ReadMode: current
+-ReadVoltage (V): 0.2
+-ReadPulseWidth (ns): 1
+
+-ResetMode: voltage
+-ResetVoltage (V): 2
+-ResetPulse (ns): 40 // From PRIME
+
+-SetMode: voltage
+-SetVoltage (V): 2
+-SetPulse (ns): 40 // From PRIME
+
+-AccessType: None
+
+-ReadFloating: false
+

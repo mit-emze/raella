@@ -1,0 +1,32 @@
+-MemCellType: memristor
+
+-CellArea (F^2): 1.49011611938
+-CellAspectRatio: 1
+
+-ResistanceOnAtSetVoltage (ohm): 2000
+-ResistanceOffAtSetVoltage (ohm): 20000
+-ResistanceOnAtResetVoltage (ohm): 2000
+-ResistanceOffAtResetVoltage (ohm): 20000
+-ResistanceOnAtReadVoltage (ohm): 2000
+-ResistanceOffAtReadVoltage (ohm): 20000
+-ResistanceOnAtHalfResetVoltage (ohm): 2000
+
+-CapacitanceOn (F): 1e-16
+-CapacitanceOff (F): 1e-16
+
+-ReadMode: current
+-ReadVoltage (V): 0.2
+-ReadPulseWidth (ns): 1
+
+-ResetMode: voltage
+-ResetVoltage (V): 2
+-ResetPulse (ns): 40 // From PRIME
+
+-SetMode: voltage
+-SetVoltage (V): 2
+-SetPulse (ns): 40 // From PRIME
+
+-AccessType: None
+
+-ReadFloating: false
+

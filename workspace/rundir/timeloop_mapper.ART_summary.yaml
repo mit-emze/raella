@@ -1,0 +1,105 @@
+ART_summary:
+    version: '0.4'
+    table_summary:
+      - name: top_level.on_chip_network[1..16]
+        area: 37500.0
+        primitive_estimations: Library
+      - name: top_level.eDRAM_buf[1..16]
+        area: 83000.0
+        primitive_estimations: Library
+      - name: top_level.inter_tile_network[1..128]
+        area: 7500.0
+        primitive_estimations: Library
+      - name: top_level.timely_psubbuf[1..262144]
+        area: 5.0
+        primitive_estimations: Library
+      - name: top_level.chip[1..1]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.inter_tile_spatial_dummy[1..1]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.output_quantize[1..16]
+        area: 41500.0
+        primitive_estimations:
+          - name: edram_scales
+            estimator: Library
+          - name: multiplier
+            estimator: Library
+      - name: top_level.inter_macro_spatial_dummy[1..16]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.output_center_offset_correct[1..128]
+        area: 461.853335
+        primitive_estimations:
+          - name: offsets_buf.storage
+            estimator: CACTI
+          - name: offsets_buf.address_generators[0..1]
+            estimator: Neurosim Plug-In
+          - name: multiplier
+            estimator: Library
+      - name: top_level.input_buffer[1..128]
+        area: 3832.05638
+        primitive_estimations:
+          - name: buf.storage
+            estimator: CACTI
+          - name: buf.address_generators[0..1]
+            estimator: Neurosim Plug-In
+          - name: input_summer
+            estimator: Library
+      - name: top_level.inter_crossbar_spatial_dummy[1..128]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.output_register[1..512]
+        area: 1511.045912
+        primitive_estimations:
+          - name: buf.storage
+            estimator: CACTI
+          - name: buf.address_generators[0..1]
+            estimator: Neurosim Plug-In
+          - name: flags.storage
+            estimator: CACTI
+          - name: flags.address_generators[0..1]
+            estimator: Neurosim Plug-In
+      - name: top_level.shift_add[1..512]
+        area: 302.01936
+        primitive_estimations:
+          - name: shift_add_unit.shift_add[1..4]
+            estimator: Neurosim Plug-In
+      - name: top_level.column_readout[1..512]
+        area: 3380.72
+        primitive_estimations:
+          - name: array_col_drivers
+            estimator: Neurosim Plug-In
+          - name: output_adc
+            estimator: Library
+      - name: top_level.input_drivers[1..512]
+        area: 2109.30073
+        primitive_estimations:
+          - name: dac_and_gate
+            estimator: Neurosim Plug-In
+          - name: row_dac.pim_row_drivers
+            estimator: Neurosim Plug-In
+      - name: top_level.inter_col_analog_inputs[1..512]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.inter_column_spatial_dummy[1..512]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.inter_cim_unit_spatial_dummy[1..262144]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.pim_cell[1..134217728]
+        area: 0.011244
+        primitive_estimations:
+          - name: cell
+            estimator: Neurosim Plug-In
+      - name: top_level.inter_bitwise_virtualization_spatial_dummy[1..134217728]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.bugfix[1..8589934592]
+        area: 0
+        primitive_estimations: []
+      - name: top_level.virtual_bitwise_mac[1..8589934592]
+        area: 0
+        primitive_estimations: []

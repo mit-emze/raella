@@ -1,0 +1,271 @@
+problem:
+  densities:
+    Inputs:
+      median_split:
+      - 0.0
+      - 0.0022
+      - 0.0247
+      - 0.0747
+      - 0.2678
+      - 0.1668
+      - 0.1649
+      - 0.328
+      median_split_neg:
+      - 0.0
+      - 0.0044
+      - 0.0493
+      - 0.1494
+      - 0.2109
+      - 0.2395
+      - 0.2352
+      - 0.2479
+      median_split_pos:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.3247
+      - 0.094
+      - 0.0946
+      - 0.4082
+      twos_compliment:
+      - 1.0
+      - 0.0094
+      - 0.1034
+      - 0.2655
+      - 0.3095
+      - 0.3462
+      - 0.3388
+      - 0.344
+      unsigned_offset:
+      - 0.0
+      - 0.0094
+      - 0.1034
+      - 0.2655
+      - 0.3095
+      - 0.3462
+      - 0.3388
+      - 0.344
+      unsigned_offset_invert_dense:
+      - 0.0
+      - 0.0094
+      - 0.1034
+      - 0.2655
+      - 0.3095
+      - 0.3462
+      - 0.3388
+      - 0.344
+      zero_split:
+      - 0.1512
+      - 0.3444
+      - 0.3013
+      - 0.2228
+      - 0.2031
+      - 0.1776
+      - 0.1822
+      - 0.172
+    Outputs:
+      median_split:
+      - 0.0
+      - 0.0027
+      - 0.0342
+      - 0.0676
+      - 0.0822
+      - 0.0887
+      - 0.0919
+      - 0.0933
+      median_split_neg:
+      - 0.0
+      - 0.0054
+      - 0.0683
+      - 0.1351
+      - 0.1644
+      - 0.1775
+      - 0.1838
+      - 0.1866
+      median_split_pos:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      twos_compliment:
+      - 1.0
+      - 0.0054
+      - 0.0683
+      - 0.1351
+      - 0.1644
+      - 0.1775
+      - 0.1838
+      - 0.1866
+      unsigned_offset:
+      - 0.0
+      - 0.0054
+      - 0.0683
+      - 0.1351
+      - 0.1644
+      - 0.1775
+      - 0.1838
+      - 0.1866
+      unsigned_offset_invert_dense:
+      - 0.0
+      - 0.0054
+      - 0.0683
+      - 0.1351
+      - 0.1644
+      - 0.1775
+      - 0.1838
+      - 0.1866
+      zero_split:
+      - 0.3159
+      - 0.1816
+      - 0.1522
+      - 0.1195
+      - 0.1055
+      - 0.0985
+      - 0.0954
+      - 0.0933
+    Weights:
+      median_split:
+      - 0.0005
+      - 0.0231
+      - 0.1005
+      - 0.1796
+      - 0.2172
+      - 0.2347
+      - 0.2446
+      - 0.2493
+      median_split_neg:
+      - 0.0008
+      - 0.0244
+      - 0.1015
+      - 0.1821
+      - 0.2166
+      - 0.2344
+      - 0.2466
+      - 0.2491
+      median_split_pos:
+      - 0.0003
+      - 0.0218
+      - 0.0995
+      - 0.177
+      - 0.2177
+      - 0.235
+      - 0.2426
+      - 0.2495
+      twos_compliment:
+      - 0.484
+      - 0.516
+      - 0.5067
+      - 0.502
+      - 0.5016
+      - 0.4939
+      - 0.5002
+      - 0.4991
+      unsigned_offset:
+      - 0.516
+      - 0.516
+      - 0.5067
+      - 0.502
+      - 0.5016
+      - 0.4939
+      - 0.5002
+      - 0.4991
+      unsigned_offset_invert_dense:
+      - 0.4731
+      - 0.4727
+      - 0.4791
+      - 0.4787
+      - 0.4807
+      - 0.4821
+      - 0.4831
+      - 0.4795
+      zero_split:
+      - 0.0005
+      - 0.0232
+      - 0.1032
+      - 0.1786
+      - 0.2174
+      - 0.2349
+      - 0.2459
+      - 0.2495
+  instance:
+    C: 512
+    G: 1
+    H: 14
+    Hdilation: 1
+    Hpad: 0
+    Hstride: 1
+    I: INPUT_BITS
+    L: WEIGHT_BITS
+    M: 64
+    N: BATCH_SIZE
+    P: 14
+    Q: 14
+    R: 1
+    S: 1
+    T: OUTPUT_BITS
+    W: 14
+    Wdilation: 1
+    Wpad: 0
+    Wstride: 1
+  layer_name: inception4c.branch4.1.conv
+  model_name: QuantizableGoogLeNet
+  shape:
+    coefficients:
+    - default: 1
+      name: Wstride
+    - default: 1
+      name: Hstride
+    - default: 1
+      name: Wdilation
+    - default: 1
+      name: Hdilation
+    data_spaces:
+    - name: Weights
+      projection:
+      - - - C
+      - - - M
+      - - - R
+      - - - S
+      - - - L
+      - - - G
+    - name: Inputs
+      projection:
+      - - - N
+      - - - C
+      - - - R
+          - Wdilation
+        - - P
+          - Wstride
+      - - - S
+          - Hdilation
+        - - Q
+          - Hstride
+      - - - I
+      - - - G
+    - name: Outputs
+      projection:
+      - - - N
+      - - - M
+      - - - Q
+      - - - P
+      - - - T
+      - - - G
+      read_write: true
+    dimensions:
+    - C
+    - M
+    - R
+    - S
+    - N
+    - P
+    - Q
+    - I
+    - L
+    - T
+    - G
+    name: conv2D

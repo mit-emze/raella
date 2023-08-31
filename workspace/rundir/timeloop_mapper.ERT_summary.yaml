@@ -1,0 +1,287 @@
+ERT_summary:
+    version: '0.4'
+    table_summary:
+      - name: top_level.on_chip_network[1..16]
+        actions:
+          - name: update
+            energy: 0.0
+          - name: read
+            energy: 20.74
+          - name: write
+            energy: 0.0
+        primitive_estimation(s):
+          - name: top_level.on_chip_network[1..16]
+            estimator: Library
+      - name: top_level.eDRAM_buf[1..16]
+        actions:
+          - name: update
+            energy: 20.45
+          - name: read
+            energy: 20.45
+          - name: write
+            energy: 20.45
+        primitive_estimation(s):
+          - name: top_level.eDRAM_buf[1..16]
+            estimator: Library
+      - name: top_level.inter_tile_network[1..128]
+        actions:
+          - name: update
+            energy: 0.0
+          - name: read
+            energy: 13.824
+          - name: write
+            energy: 0.0
+        primitive_estimation(s):
+          - name: top_level.inter_tile_network[1..128]
+            estimator: Library
+      - name: top_level.timely_psubbuf[1..262144]
+        actions:
+          - name: update
+            energy: 0.0
+          - name: read
+            energy: 0.0023
+          - name: write
+            energy: 0.0
+        primitive_estimation(s):
+          - name: top_level.timely_psubbuf[1..262144]
+            estimator: Library
+      - name: top_level.chip[1..1]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.inter_tile_spatial_dummy[1..1]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.output_quantize[1..16]
+        actions:
+          - name: read
+            energy: 15.499722
+          - name: write
+            energy: 0
+          - name: update
+            energy: 0
+          - name: idle
+            energy: 0
+        primitive_estimation(s):
+          - name: edram_scales
+            estimator: Library
+          - name: multiplier
+            estimator: Library
+      - name: top_level.inter_macro_spatial_dummy[1..16]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.output_center_offset_correct[1..128]
+        actions:
+          - name: read
+            energy: 0.424874
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s):
+          - name: offsets_buf.storage
+            estimator: CACTI
+          - name: offsets_buf.address_generators[1]
+            estimator: Neurosim Plug-In
+          - name: multiplier
+            estimator: Library
+      - name: top_level.input_buffer[1..128]
+        actions:
+          - name: idle
+            energy: 7244836.000071
+          - name: read
+            energy: 2.469669
+          - name: update
+            energy: 1.563046
+          - name: write
+            energy: 1.563046
+        primitive_estimation(s):
+          - name: buf.storage
+            estimator: CACTI
+          - name: buf.address_generators[0..1]
+            estimator: Neurosim Plug-In
+          - name: buf.address_generators[1]
+            estimator: Neurosim Plug-In
+          - name: buf.address_generators[0]
+            estimator: Neurosim Plug-In
+          - name: input_summer
+            estimator: Library
+      - name: top_level.inter_crossbar_spatial_dummy[1..128]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.output_register[1..512]
+        actions:
+          - name: read
+            energy: 0.419446
+          - name: update
+            energy: 0.638462
+          - name: idle
+            energy: 6100915.800017
+          - name: write
+            energy: 0.638462
+        primitive_estimation(s):
+          - name: buf.storage
+            estimator: CACTI
+          - name: buf.address_generators[1]
+            estimator: Neurosim Plug-In
+          - name: flags.storage
+            estimator: CACTI
+          - name: flags.address_generators[1]
+            estimator: Neurosim Plug-In
+          - name: buf.address_generators[0]
+            estimator: Neurosim Plug-In
+          - name: flags.address_generators[0]
+            estimator: Neurosim Plug-In
+          - name: buf.address_generators[0..1]
+            estimator: Neurosim Plug-In
+          - name: flags.address_generators[0..1]
+            estimator: Neurosim Plug-In
+      - name: top_level.shift_add[1..512]
+        actions:
+          - name: update
+            energy: 0.028252
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 25601800.0
+          - name: read
+            energy: 0
+        primitive_estimation(s):
+          - name: shift_add_unit.shift_add
+            estimator: Neurosim Plug-In
+          - name: shift_add_unit.shift_add[1..4]
+            estimator: Neurosim Plug-In
+      - name: top_level.column_readout[1..512]
+        actions:
+          - name: read
+            energy: 0.543021
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 247021700.0
+          - name: update
+            energy: 0
+        primitive_estimation(s):
+          - name: array_col_drivers
+            estimator: Neurosim Plug-In
+          - name: output_adc
+            estimator: Library
+      - name: top_level.input_drivers[1..512]
+        actions:
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 123510900.0
+          - name: update
+            energy: 0
+          - name: read
+            energy: 0.024133
+        primitive_estimation(s):
+          - name: row_dac.pim_row_drivers
+            estimator: Neurosim Plug-In
+      - name: top_level.inter_col_analog_inputs[1..512]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.inter_column_spatial_dummy[1..512]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.inter_cim_unit_spatial_dummy[1..262144]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.pim_cell[1..134217728]
+        actions:
+          - name: read
+            energy: 0.001944
+          - name: write
+            energy: 48.949655
+          - name: idle
+            energy: 0.0
+          - name: update
+            energy: 0
+        primitive_estimation(s):
+          - name: cell
+            estimator: Neurosim Plug-In
+      - name: top_level.inter_bitwise_virtualization_spatial_dummy[1..134217728]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.bugfix[1..8589934592]
+        actions:
+          - name: read
+            energy: 0
+          - name: write
+            energy: 0
+          - name: idle
+            energy: 0
+          - name: update
+            energy: 0
+        primitive_estimation(s): []
+      - name: top_level.virtual_bitwise_mac[1..8589934592]
+        actions:
+          - name: compute
+            energy: 0
+        primitive_estimation(s): []

@@ -1,0 +1,93 @@
+variables:
+  # =============================================================================
+  # Workload
+  # =============================================================================
+  # RAELLA: Mess with the # of weight bits to achieve different numbers of bits
+  # per cell.
+  ACTUAL_WEIGHT_BITS: 8
+  CIM_UNITS_PER_WEIGHT: 3 # 2T2R is one CIM unit, comprising 2 cells.
+  BITS_PER_CELL: 4
+
+  WEIGHT_BITS: BITS_PER_CELL * CIM_UNITS_PER_WEIGHT * 2
+  INPUT_BITS: 8
+  OUTPUT_BITS: 8
+  BATCH_SIZE: 1
+
+  AVERAGE_INPUT_VALUE: 0.12
+  AVERAGE_WEIGHT_VALUE: 0.3
+
+  # =============================================================================
+  # Architecture structure
+  # =============================================================================
+  # Supported bits
+  SUPPORTED_INPUT_BITS:  8       # Maximum input bits supported by the arch.
+  SUPPORTED_WEIGHT_BITS: 8       # Maximum weight bits supported by the arch.
+  SUPPORTED_OUTPUT_BITS: 8       # Maximum output bits supported by the arch.
+
+  # Architecture size
+  TILES_PER_ARCH:           32  # Architectural tiles
+  MACROS_PER_TILE:          8   # Minimal CiM unit. Crossbar + buffers
+  CROSSBARS_PER_MACRO:         4   # CiM memory crossbar + peripherals
+  COLUMNS_PER_CROSSBAR:        512 # A col. uses 1+ inputs to create 1 psum
+  CIM_UNITS_PER_COLUMN:     512 # Independently-activated group of cells
+
+  # The Compute-In-Memory (CIM) Unit is the smallest architectural unit that is
+  # available for spatial mapping. In one timestep, each CIM Unit may compute
+  # one psum using an input and a stored weight. A CIM Unit may be made up of
+  # multiple cells (i.e. SRAM bitcells). The "width" is the number of cells
+  # that are accessed together as one, such as 4 SRAM bitcells to form a 4-bit
+  # value. The "depth" is the number of different addresses that are available
+  # per cell group. For example, if the depth is 2, then each CIM Unit can
+  # store two different weights, and can access either in a given timestep.
+  CIM_UNIT_WIDTH_CELLS:  2    # "Width" cells are accessed together as one
+  CIM_UNIT_DEPTH_CELLS:  1    # "Depth" addresses available per cell group
+  # BITS_PER_CELL:         4    # Number of bits per memory cell Defined above
+
+
+  # Derived architecture size parameters
+  CIM_UNIT_WIDTH_BITS: CIM_UNIT_WIDTH_CELLS * BITS_PER_CELL
+  ROWS_PER_CROSSBAR: CIM_UNITS_PER_COLUMN * CIM_UNIT_DEPTH_CELLS
+  COLS_PER_CROSSBAR: COLUMNS_PER_CROSSBAR
+  CELLS_PER_CROSSBAR: ROWS_PER_CROSSBAR * COLS_PER_CROSSBAR
+  STORAGE_PER_CROSSBAR: CELLS_PER_CROSSBAR * BITS_PER_CELL
+
+  ROWS_PER_MACRO: ROWS_PER_CROSSBAR * CROSSBARS_PER_MACRO
+  COLS_PER_MACRO: COLS_PER_CROSSBAR * CROSSBARS_PER_MACRO
+  CELLS_PER_MACRO: CELLS_PER_CROSSBAR * CROSSBARS_PER_MACRO
+  STORAGE_PER_MACRO: STORAGE_PER_CROSSBAR * CROSSBARS_PER_MACRO
+
+  # =============================================================================
+  # Data Converters
+  # =============================================================================
+  ADC_RESOLUTION: 7
+  # Really it's to 4, but as far as mapping is concerned it's 1 bit per cycle
+  DAC_RESOLUTION: 1
+
+  # =============================================================================
+  # Hardware
+  # =============================================================================
+  VOLTAGE: 0.7
+  LATENCY: 1.0e-9 # ns per cycle
+  # Longer crossbar latency when crossbar is slower than the rest of the chip
+  CROSSBAR_LATENCY_PRE_SPECULATION: LATENCY * 100
+  TECH_NODE: 32 # nm
+  # Make sure the preprocessor adds the cell_configs dir to the working dir!
+  CELL_CONFIG: getcwd() + "/cell_configs/raella.cell" 
+
+
+  # ===========================================================================
+  # Other
+  # ===========================================================================
+  INF: 2147483647
+  # Each cell computes the outer product of DAC_RESOLUTION input bits,
+  # ADC_RESOLUTION weight bits, and ADC_RESOLUTION output bits each cycle.
+  N_VIRTUAL_MACS: DAC_RESOLUTION * CIM_UNIT_WIDTH_BITS * OUTPUT_BITS
+
+
+  N_SHIFT_ADDS_PER_BANK: 4
+  DOUBLE_WIDTH_OUTPUT_REG: False
+  N_ADC_PER_BANK: 4
+  COLUMN_READOUT_CLASS: "isaac_adc"
+  SPECULATION_ENABLED: 1
+  ADC_ACTION_SHARE: 0.4 if SPECULATION_ENABLED else 1
+  CROSSBAR_LATENCY: CROSSBAR_LATENCY_PRE_SPECULATION * (11 / 8 if SPECULATION_ENABLED else 1)

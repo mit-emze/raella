@@ -1,0 +1,28 @@
+# Run as follows:
+#
+#    1) Change USER_UID and USER_GID to the desired owner of your files (echo $UID )
+#    2) Run the following command:
+#
+#        % If you are using x86 CPU (Intel, AMD)
+#        % DOCKER_ARCH=amd64 docker-compose up
+#
+#        % If you want to avoid typing "DOCKER_ARCH=" every time,
+#        % "export DOCKER_ARCH=<your architecture>" >> ~/.bashrc && source ~/.bashrc
+#
+#    5) Look at output and use the 127.0.0.1 URL (unless you changed the port below)
+#
+
+version: '3'
+
+services:
+  labs:
+    hostname: labs
+    image: timeloopaccelergy/timeloop-accelergy-pytorch:raella-pim-amd64
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./workspace:/home/workspace
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000

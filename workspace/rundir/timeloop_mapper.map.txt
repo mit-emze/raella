@@ -1,0 +1,47 @@
+chip [ Inputs:131072 (131072) Outputs:262144 (262144) ] 
+inter_tile_spatial_dummy [ ] 
+----------------------------
+| for N in [0:16) (Spatial-X)
+
+on_chip_network [ Inputs:8192 (8192) Outputs:16384 (16384) ] 
+eDRAM_buf [ Inputs:8192 (8192) Outputs:16384 (16384) ] 
+output_quantize [ Outputs:16384 (16384) ] 
+inter_macro_spatial_dummy [ ] 
+-----------------------------
+|   for M in [0:4) (Spatial-X)
+|     for N in [0:2) (Spatial-X)
+
+inter_tile_network [ Inputs:4096 (4096) Outputs:2048 (2048) ] 
+output_center_offset_correct [ Outputs:2048 (2048) ] 
+input_buffer [ Inputs:4096 (4096) ] 
+inter_crossbar_spatial_dummy [ ] 
+--------------------------------
+|       for M in [0:4) (Spatial-X)
+
+output_register [ Outputs:512 (512) ] 
+-------------------------------------
+|         for I in [0:8)
+
+shift_add [ Outputs:512 (512) ] 
+column_readout [ Outputs:512 (512) ] 
+input_drivers [ Inputs:512 (512) ] 
+inter_col_analog_inputs [ Inputs:512 (512) ] 
+inter_column_spatial_dummy [ ] 
+------------------------------
+|           for L in [0:8) (Spatial-X)
+|             for M in [0:64) (Spatial-X)
+
+timely_psubbuf [ Outputs:8 (8) ] 
+inter_cim_unit_spatial_dummy [ ] 
+--------------------------------
+|               for C in [0:512) (Spatial-X)
+
+pim_cell [ Weights:8 (8) ] 
+inter_bitwise_virtualization_spatial_dummy [ ] 
+----------------------------------------------
+|                 for T in [0:8) (Spatial-X)
+|                   for L in [0:8) (Spatial-X)
+
+bugfix [ ] 
+----------
+|                     << Compute >>

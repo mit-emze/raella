@@ -1,0 +1,18 @@
+compound_components:
+  version: 0.4
+  classes:
+    - name: d_flip_flop
+      attributes:
+        technology: "must_specify"
+        n_bits: "must_specify"
+
+      subcomponents:
+      - name: ff
+        class: flip_flop
+        attributes: {technology: technology, n_bits: n_bits}
+
+      actions:
+        - {name: read, subcomponents: {}} # Unused
+        - {name: write, subcomponents: {}} # Unused
+        - {name: update, subcomponents: {}} # Unused
+        - {name: idle, subcomponents: {}} # Unused

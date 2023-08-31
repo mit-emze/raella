@@ -14,9 +14,9 @@ following commands:
 ```
 git clone https://github.com/mit-emze/raella.git
 cd raella
+cp docker-compose.yaml.example docker-compose.yaml
 # FOLLOW THE INSTRUCTIONS IN THE docker-compose.yaml FILE
 docker pull timeloopaccelergy/timeloop-accelergy-pytorch:raella-pim-amd64
-export DOCKER_ARCH=amd64
 docker-compose up
 ```
 

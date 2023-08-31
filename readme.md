@@ -20,7 +20,7 @@ export DOCKER_ARCH=amd64
 docker-compose up
 ```
 
-Click on the link that appears in the terminal to open the Jupyter notebook,
+Click on the link that appears in the terminal to open Jupyter,
 navigate to the artifact.ipynb notebook, and follow through the instructions
 there.
 

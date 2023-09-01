@@ -16,13 +16,18 @@ git clone https://github.com/mit-emze/raella.git
 cd raella
 cp docker-compose.yaml.example docker-compose.yaml
 # FOLLOW THE INSTRUCTIONS IN THE docker-compose.yaml FILE
-docker pull timeloopaccelergy/timeloop-accelergy-pytorch:raella-pim-amd64
 docker-compose up
 ```
 
-Click on the link that appears in the terminal to open Jupyter,
-navigate to the artifact.ipynb notebook, and follow through the instructions
-there.
+Click on the link that appears in the terminal to open Jupyter, navigate to the
+artifact.ipynb notebook, and follow through the instructions there.
+
+## **FAQ**
+### `docker-compose up` yields ERROR: Service 'labs' failed to build : Build failed
+Pull the docker image manually and try again:
+```
+docker pull timeloopaccelergy/timeloop-accelergy-pytorch:raella-pim-amd64
+```
 
 ## **Future Plans**
 We are working on adding area, energy, and throughput models of other PIM

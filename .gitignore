@@ -1,1 +1,10 @@
 docker-compose.yaml
+
+# Temp files
+workspace/.*
+**__pycache__*
+
+
+# Workspace run directory
+workspace/rundir
+workspace/rundir/rundir/*

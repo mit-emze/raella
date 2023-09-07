@@ -1,9 +1,9 @@
 compound_components:
   version: 0.4
   # ===========================================================================
-  # Shared descriptors
+  # Shared attributes
   # ===========================================================================
-  check_ignore_macros:
+  check_ignore_macros: # 'ignore' so it is ignored by timeloopfe
     - &pim_attributes
       technology: "must_specify"
       rows: "must_specify"
@@ -13,15 +13,12 @@ compound_components:
       average_input_value: "must_specify"
       average_cell_value: "must_specify"
       latency: "must_specify"
-      voltage_dac_bits: null # Optional
-      temporal_dac_bits: null
-      temporal_spiking: null
+      voltage_dac_bits: null  # Optional
+      temporal_dac_bits: null # Optional
+      temporal_spiking: null  # Optional
       adc_action_share: 1
       adc_area_share: 1
-      read_pulse_width: 1e-9 # FIXME: If this is left blank, the number should
-                            # be grabbed from the cell file. If the cell file
-                            # is blank as well, use a default value.
-                            # Right now, cell file step is skipped
+      read_pulse_width: 1e-9
 
     - &pim_attributes_subcomponent
       technology: technology
@@ -45,7 +42,6 @@ compound_components:
     attributes: {<<: *pim_attributes}
 
     subcomponents:
-    # Row drivers
     - name: pim_row_drivers
       class: array_row_drivers
       attributes: {<<: *pim_attributes_subcomponent}
@@ -65,9 +61,8 @@ compound_components:
   - name: weight_row_drivers
     attributes: {<<: *pim_attributes}
     subcomponents:
-    # Row drivers
     - name: pim_row_drivers
-      class: INPUT_DRIVERS_CLASS
+      class: array_row_drivers
       attributes: {<<: *pim_attributes_subcomponent}
       area_share: 0 # Area already taken into account in the input drivers
 
@@ -102,9 +97,6 @@ compound_components:
     - name: idle
       subcomponents:
       - {name: cell, actions: [{name: idle, action_share: width_cells}]}
-      # - name: control_read
-      #   subcomponents:
-      #     - {name: cell, actions: [{name: read, action_share: 100}]}
     - {name: update, subcomponents: []} # Unused
 
   # ===========================================================================
@@ -137,8 +129,10 @@ compound_components:
     actions:
     - name: read # Read action processes a value
       subcomponents:
-      - {name: array_col_drivers, actions: [{name: drive, action_share: adc_action_share * include_column_drivers}]}
-      - {name: output_adc, actions: [{name: read, action_share: adc_action_share}]}
+      - name: array_col_drivers 
+        actions: [{name: drive, action_share: include_column_drivers}]
+      - name: output_adc
+        actions: [{name: read, action_share: adc_action_share}]
     - {name: write, subcomponents: []} # Unused
     - name: idle
       subcomponents:
@@ -167,7 +161,8 @@ compound_components:
     actions:
     - name: update
       subcomponents:
-      - {name: shift_add_unit, actions: [{name: shift_add, action_share: adc_action_share}]}
+      - name: shift_add_unit
+        actions: [{name: shift_add, action_share: adc_action_share}]
     - {name: write, subcomponents: []} # Unused
     - name: idle
       subcomponents:
@@ -175,13 +170,12 @@ compound_components:
     - {name: read, subcomponents: []} # Unused
 
   # ===========================================================================
-  # Model MACs as occuring for free, as they are done in analog domain.
+  # Model analog MACs as zero-cost
   # ===========================================================================
   - name: free_mac
     subcomponents: []
     attributes: {}
     actions: [{name: compute, subcomponents: []}]
-
 
   # ===========================================================================
   # Dummy storage for when we want a zero-cost storage

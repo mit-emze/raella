@@ -29,10 +29,6 @@ helpful_macros_ignore:
                      # shrink mapspace.
   no_link_transfer: *dataspaces # No link transfers unless explicitly enabled
   no_multicast_no_reduction: *dataspaces # No networks unless enabled
-  # default_max_factor: 99999999 # Speed up mapping: Set maximum spatial factor
-  #                              # to the fanout of the level. e.g. if there are
-  #                              # 3 spatial elements, don't try loops of >=4.
-  #                              # _fanout_ is a special keyword
   split: 999 # Disable spatial XY by splitting at the max value. We're not using
              # Timeloop's 2D model in this architecture.
 
@@ -42,7 +38,6 @@ helpful_macros_ignore:
 # loop nests.
 - &temporal_dummy_constraints # Dummies do not support iteration or reuse.
   factors_only: []
-  # no_reuse: ["*"]
   permutation: *vars # Fix permutation to shrink mapspace.
   rmw_on_first_writeback: ["Inputs", "Outputs", "Weights"]
 
@@ -59,10 +54,12 @@ helpful_macros_ignore:
 # (Use "<<: *default_buffer" to merge keys without hierarchically merging
 # subdictionaries.)
 #
-# e.g. - name: buffer_name
+# e.g. - !Element
+#        name: buffer_name
 #        <<<: *default_buffer
 #        attributes: {depth: 1024}
-#      - name: input_only_processing_stage_name
+#      - !Element
+#        name: processing_stage_name
 #        <<< *input_processing_stage
 #        attributes: {depth: 1024}
 # =============================================================================

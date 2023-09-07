@@ -116,17 +116,7 @@ architecture:
       depth: entry_bits * n_entries // width # depth=Capacity/width
       datawidth: 2 # Accumulate in 16b registers instead of 8b. 2x datawidth 
       speculation_adc_scale: ADC_ACTION_SHARE
-      # # We double the output register size to handle the case where the output
-      # # is imperfectly factorized.
-      # # Example: L=2, M=511 can clearly fit in the four crossbars; use 2 columns
-      # #          per weight in each crossbar, M=128 in 2 crossbars, and M=127 in
-      # #          the last. However, perfect factorization puts us in a place
-      # #          where we need M=511 in 2 crossbars, each crossbar handling a
-      # #          different L. This results in 2x the outputs stored in each
-      # #          output register...
-      # # This only works if the output register is sized for max crossbar
-      # # utilization. If it is not, we need to do something else.
-      # multiple_buffering: 0.5 
+      n_flags: COLUMNS_PER_CROSSBAR
     constraints:
       dataspace: {keep_only: [Outputs]}
       temporal: {factors_only: [I=0], factors: []} # 0 = all

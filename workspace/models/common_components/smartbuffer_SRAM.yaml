@@ -1,6 +1,8 @@
 compound_components:
   version: 0.4
   classes:
+  # Smartbuffer SRAM for CACTI with some scaling for buffer sizes outside of
+  # CACTI's range
   - name: smartbuffer_sram
     attributes:
       technology: "must_specify"

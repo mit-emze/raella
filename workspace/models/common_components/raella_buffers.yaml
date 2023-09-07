@@ -2,7 +2,8 @@ compound_components:
   version: 0.4
   classes:
   # ===========================================================================
-  # Output register. Can avoid doing reads if speculation is successful.
+  # RAELLA output register. Includes a buffer for psums + a flag buffer for
+  # speculation.
   # ===========================================================================
   - name: raella_output_register
     attributes:
@@ -12,13 +13,12 @@ compound_components:
       technology: "must_specify"
       entry_bits: "must_specify"
       speculation_enabled: speculation_adc_scale != 1
-      n_flags: width * depth // entry_bits
+      n_flags: "must_specify"
       flag_width: 64
       flag_reads_per_read: (width // entry_bits) / flag_width
       flag_action_share: speculation_enabled * flag_reads_per_read
 
     subcomponents:
-    # Shift and add circuit to add together output
     - name: buf
       class: smartbuffer_sram
       attributes:
@@ -111,6 +111,7 @@ compound_components:
       center_entries: "must_specify"
       buf_width: 64
       read_share: width / buf_width
+      n_center_entry_bits: 4
 
     subcomponents:
     - name: offsets_buf
@@ -118,13 +119,13 @@ compound_components:
       attributes:
         technology: technology
         width:      64
-        depth:      center_entries // width * 4
+        depth:      center_entries // width * n_center_entry_bits
 
     - name: multiplier
       class: aladdin_multiplier
       attributes:
         technology: technology
-        width_a:    4
+        width_a:    n_center_entry_bits
         width_b:    12
 
     actions:

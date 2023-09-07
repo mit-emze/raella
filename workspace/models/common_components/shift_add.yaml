@@ -23,7 +23,7 @@ compound_components:
     - &read_action
       name: read
       subcomponents: [{name: shift_add, actions: [{name: shift_add}]}]
-    - {name: shift_add, <<: *read_action} # Alias
+    - {name: shift_add, <<: *read_action}
 
     - {name: write, subcomponents: {}}
     - name: idle
